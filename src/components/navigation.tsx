@@ -44,7 +44,7 @@ export function Navigation() {
                 />
               </div>
               <span className="ml-3 text-xl font-bold text-gray-900 tracking-tight">
-                Impro HR-Informartion System
+                IRIS Talent
               </span>
             </div>
           </div>
