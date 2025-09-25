@@ -1,8 +1,9 @@
 'use client'
 
 import { useSession, signOut } from 'next-auth/react'
-import { Building2, LogOut, User, Settings } from 'lucide-react'
+import { LogOut, User, Settings } from 'lucide-react'
 import { Role } from '@prisma/client'
+import Image from 'next/image';
 
 export function Navigation() {
   const { data: session } = useSession()
@@ -30,15 +31,20 @@ export function Navigation() {
 
   return (
     <nav className="bg-white/95 backdrop-blur-lg shadow-lg border-b border-gray-200/50 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 animate-slide-in-top">
+      <div className=" px-12 sm:px-6 lg:px-12 animate-slide-in-top">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
-              <div className="h-10 w-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
-                <Building2 className="h-6 w-6 text-white" />
+              <div className="flex items-center justify-center">
+                <Image
+                  src="/logo.png" // Use the root path for the public directory
+                  alt="Company Logo"
+                  width={150} // Set the desired width
+                  height={150} // Set the desired height
+                />
               </div>
               <span className="ml-3 text-xl font-bold text-gray-900 tracking-tight">
-                Impro HR-System
+                Impro HR-Informartion System
               </span>
             </div>
           </div>

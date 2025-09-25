@@ -3,13 +3,12 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { 
-  BarChart3, DollarSign, Users, Building, Calendar, FileText,
-  Calculator, PiggyBank, TrendingUp, Clock, AlertCircle, 
-  CheckCircle, Briefcase, Settings, Home,
-  ChevronDown, ChevronRight
+import {
+  BarChart3, DollarSign, Users, Calendar, FileText,
+  Calculator, PiggyBank, TrendingUp, Clock, AlertCircle,
+  CheckCircle, Briefcase, Settings, ChevronRight, PanelLeft
 } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const navigation = [
@@ -89,102 +88,188 @@ const navigation = [
 
 export function PayrollSidebar() {
   const pathname = usePathname()
-  const [expandedSections, setExpandedSections] = useState<string[]>(['Employee Management'])
+  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [activeMenu, setActiveMenu] = useState<string | null>(null)
 
-  const toggleSection = (sectionName: string) => {
-    setExpandedSections(prev =>
-      prev.includes(sectionName)
-        ? prev.filter(name => name !== sectionName)
-        : [...prev, sectionName]
+  useEffect(() => {
+    // Si la ruta activa es un hijo, expande el menú padre al cargar
+    const activeSection = navigation.find(item =>
+      item.children?.some(child => pathname === child.href)
     )
+    if (activeSection) {
+      setActiveMenu(activeSection.name)
+    }
+  }, [pathname])
+
+  const toggleSidebar = () => {
+    setIsCollapsed(!isCollapsed)
+    if (!isCollapsed) {
+      setActiveMenu(null)
+    }
   }
 
+  const isNavLinkActive = (href: string) => pathname === href
+
+  const isParentActive = (children: any[]) => children.some(child => pathname === child.href)
+
   return (
-    <div className="flex flex-col w-64 bg-white border-r border-gray-200 h-screen">
+    <motion.div
+      initial={false}
+      animate={{ width: isCollapsed ? 64 : 256 }}
+      transition={{ duration: 0.2 }}
+      className="flex flex-col bg-white border-r border-gray-200 h-screen overflow-hidden"
+    >
       {/* Header */}
-      <div className="h-16 flex items-center justify-center border-b border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-900">Payroll System</h2>
+      <div className="h-16 flex items-center p-4 border-b border-gray-200">
+        {!isCollapsed && (
+          <h2 className="text-xl font-bold text-gray-900 truncate mr-auto">
+            Payroll
+          </h2>
+        )}
+        <button
+          onClick={toggleSidebar}
+          className="p-1 rounded-md text-gray-400 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+          title={isCollapsed ? "Expandir" : "Contraer"}
+        >
+          <PanelLeft className="h-6 w-6" />
+        </button>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto px-2 py-4">
+      <nav className="flex-1 overflow-y-auto p-2 space-y-2">
         {navigation.map((item) => {
-          if (item.children) {
-            const isExpanded = expandedSections.includes(item.name)
-            const hasActiveChild = item.children.some(child => pathname === child.href)
+          const isActive = isNavLinkActive(item.href || '')
+          const isActiveParent = item.children && isParentActive(item.children)
 
-            return (
-              <div key={item.name} className="mb-1">
-                <button
-                  onClick={() => toggleSection(item.name)}
+          return (
+            <div key={item.name} className="relative">
+              {!item.children ? (
+                // Enlace regular
+                <Link
+                  href={item.href || ''}
                   className={cn(
-                    'w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md transition-colors',
-                    hasActiveChild || isExpanded
-                      ? 'bg-green-50 text-green-700'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                    "flex items-center rounded-md text-sm font-medium transition-colors duration-200",
+                    isCollapsed ? 'p-2 justify-center' : 'p-2',
+                    isActive ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                   )}
+                  title={item.description}
                 >
-                  <div className="flex items-center">
-                    <item.icon className="mr-3 h-4 w-4" />
-                    {item.name}
-                  </div>
-                  {isExpanded ? <ChevronDown className="h-4 w-4 transition-transform duration-300" /> : <ChevronRight className="h-4 w-4 transition-transform duration-300" />}
-                </button>
+                  <item.icon className={cn("h-5 w-5", !isCollapsed && "mr-3")} />
+                  {!isCollapsed && (
+                    <span className="truncate">{item.name}</span>
+                  )}
+                </Link>
+              ) : (
+                // Elemento de menú desplegable
+                <div
+                  onMouseEnter={() => isCollapsed && setActiveMenu(item.name)}
+                  onMouseLeave={() => isCollapsed && setActiveMenu(null)}
+                >
+                  <button
+                    onClick={() => setActiveMenu(activeMenu === item.name ? null : item.name)}
+                    className={cn(
+                      "flex items-center w-full rounded-md text-sm font-medium transition-colors duration-200",
+                      isCollapsed ? 'p-2 justify-center' : 'p-2 justify-between',
+                      (isActiveParent || activeMenu === item.name) ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    )}
+                  >
+                    <div className="flex items-center">
+                      <item.icon className={cn("h-5 w-5", !isCollapsed && "mr-3")} />
+                      {!isCollapsed && (
+                        <span className="truncate">{item.name}</span>
+                      )}
+                    </div>
+                    {!isCollapsed && (
+                      <ChevronRight
+                        className={cn("h-4 w-4 transition-transform duration-200", activeMenu === item.name && "rotate-90")}
+                      />
+                    )}
+                  </button>
 
-                <AnimatePresence>
-                  {isExpanded && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="ml-6 overflow-hidden"
-                    >
-                      {item.children.map((child) => {
-                        const isActive = pathname === child.href
-                        return (
+                  <AnimatePresence>
+                    {isCollapsed && activeMenu === item.name && (
+                      <motion.div
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -10 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute left-full top-0 ml-2 z-50 w-60 bg-white rounded-md shadow-lg p-2 border border-gray-200"
+                      >
+                        <h4 className="text-xs font-semibold text-gray-500 p-2 border-b border-gray-200 mb-2">
+                          {item.name}
+                        </h4>
+                        {item.children.map((child) => (
                           <Link
                             key={child.name}
                             href={child.href}
                             className={cn(
-                              'flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors',
-                              isActive
-                                ? 'bg-green-100 text-green-700'
-                                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                              'flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors',
+                              isNavLinkActive(child.href)
+                                ? 'bg-blue-200 text-blue-800'
+                                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                             )}
                             title={child.description}
                           >
                             <child.icon className="mr-3 h-4 w-4" />
-                            {child.name}
+                            <span className="truncate">{child.name}</span>
                           </Link>
-                        )
-                      })}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            )
-          }
+                        ))}
+                      </motion.div>
+                    )}
 
-          const isActive = pathname === item.href
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={cn(
-                'flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors mb-1',
-                isActive
-                  ? 'bg-green-100 text-green-700'
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                    {!isCollapsed && activeMenu === item.name && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="py-1">
+                          {item.children.map((child) => (
+                            <Link
+                              key={child.name}
+                              href={child.href}
+                              className={cn(
+                                'flex items-center pl-10 pr-2 py-2 text-sm font-medium rounded-md transition-colors',
+                                isNavLinkActive(child.href)
+                                  ? 'bg-blue-200 text-blue-800'
+                                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                              )}
+                              title={child.description}
+                            >
+                              <child.icon className="mr-3 h-4 w-4" />
+                              <span className="truncate">{child.name}</span>
+                            </Link>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               )}
-              title={item.description}
-            >
-              <item.icon className="mr-3 h-4 w-4" />
-              {item.name}
-            </Link>
+            </div>
           )
         })}
       </nav>
 
-    </div>
+      {/* Footer / Settings */}
+      <div className="p-4 border-t border-gray-200">
+        <Link
+          href="/settings"
+          className={cn(
+            "flex items-center p-2 text-sm font-medium rounded-md transition-colors",
+            isCollapsed ? 'justify-center' : '',
+            isNavLinkActive('/settings') ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+          )}
+          title="Settings"
+        >
+          <Settings className={cn("h-5 w-5", !isCollapsed && "mr-3")} />
+          {!isCollapsed && (
+            <span>Settings</span>
+          )}
+        </Link>
+      </div>
+    </motion.div>
   )
 }
