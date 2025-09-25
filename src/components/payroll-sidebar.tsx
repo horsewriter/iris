@@ -3,11 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import {
-  BarChart3, DollarSign, Users, Calendar, FileText,
-  Calculator, PiggyBank, TrendingUp, Clock, AlertCircle,
-  CheckCircle, Briefcase, Settings, ChevronRight, PanelLeft
-} from 'lucide-react'
+import { ChartBar as BarChart3, DollarSign, Users, Calendar, FileText, Calculator, PiggyBank, TrendingUp, Clock, CircleAlert as AlertCircle, CircleCheck as CheckCircle, Briefcase, Settings, ChevronRight, PanelLeft } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 

@@ -4,10 +4,7 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { Role } from '@prisma/client'
-import { 
-  Calendar, Download, Search, Eye, Filter,
-  Users, Clock, CheckCircle, XCircle, AlertCircle
-} from 'lucide-react'
+import { Calendar, Download, Search, Eye, ListFilter as Filter, Users, Clock, CircleCheck as CheckCircle, Circle as XCircle, CircleAlert as AlertCircle } from 'lucide-react'
 import { PayrollSidebar } from '@/components/payroll-sidebar'
 import { Navigation } from '@/components/navigation'
 
