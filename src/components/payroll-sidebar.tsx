@@ -19,6 +19,46 @@ const navigation = [
     description: 'Payroll overview and statistics'
   },
   {
+    name: 'Nomina',
+    icon: DollarSign,
+    children: [
+      { name: 'Resumen de Nomina', href: '/payroll/nomina/resumen', icon: FileText, description: 'Tax report and payroll summary' },
+      { name: 'Recibo de Empleado', href: '/payroll/nomina/recibo', icon: FileText, description: 'Employee pay stubs' },
+      { name: 'Periodos Semanal', href: '/payroll/nomina/periodos', icon: Calendar, description: 'Weekly payroll periods' },
+      { name: 'Simulacion de Finiquitos', href: '/payroll/nomina/finiquitos', icon: Calculator, description: 'Severance pay simulation' }
+    ]
+  },
+  {
+    name: 'Prenomina',
+    icon: Clock,
+    children: [
+      { name: 'Resumen Diario de Asistencia', href: '/payroll/prenomina/asistencia-diaria', icon: Calendar, description: 'Daily attendance summary' },
+      { name: 'Resumen de Prenomina', href: '/payroll/prenomina/resumen', icon: FileText, description: 'Pre-payroll summary' },
+      { name: 'Prenomina por Empleado', href: '/payroll/prenomina/por-empleado', icon: Users, description: 'Pre-payroll by employee' },
+      { name: 'Resumen de Incidencias', href: '/payroll/prenomina/incidencias', icon: AlertCircle, description: 'Incidents summary' },
+      { name: 'Resumen de Vacaciones', href: '/payroll/prenomina/vacaciones', icon: Calendar, description: 'Vacation summary' },
+      { name: 'Resumen de Faltas', href: '/payroll/prenomina/faltas', icon: XCircle, description: 'Absences summary' },
+      { name: 'Resumen de Horas Extra', href: '/payroll/prenomina/horas-extra', icon: Clock, description: 'Overtime summary' },
+      { name: 'Resumen de Permisos', href: '/payroll/prenomina/permisos', icon: CheckCircle, description: 'Permissions summary' },
+      { name: 'Resumen de Incapacidad', href: '/payroll/prenomina/incapacidad', icon: AlertCircle, description: 'Disability summary' },
+      { name: 'Horarios Semanales', href: '/payroll/prenomina/horarios', icon: Calendar, description: 'Weekly schedules' }
+    ]
+  },
+  {
+    name: 'Empleado Activo',
+    icon: Users,
+    children: [
+      { name: 'Resumen de Empleado', href: '/payroll/empleado-activo/resumen', icon: Users, description: 'Employee summary with kardex and personal data' },
+      { name: 'Datos Personales', href: '/payroll/empleado-activo/datos-personales', icon: Users, description: 'Personal information' },
+      { name: 'Contratacion', href: '/payroll/empleado-activo/contratacion', icon: FileText, description: 'Hiring information' },
+      { name: 'Expediente', href: '/payroll/empleado-activo/expediente', icon: FileText, description: 'Employee file' },
+      { name: 'Vitacora', href: '/payroll/empleado-activo/vitacora', icon: FileText, description: 'Employee log' },
+      { name: 'Historia de Nomina', href: '/payroll/empleado-activo/historia-nomina', icon: DollarSign, description: 'Payroll history' },
+      { name: 'Calendario', href: '/payroll/empleado-activo/calendario', icon: Calendar, description: 'Employee calendar' },
+      { name: 'Bitacora', href: '/payroll/empleado-activo/bitacora', icon: FileText, description: 'Employee activity log' }
+    ]
+  },
+  {
     name: 'Employee Management',
     icon: Users,
     children: [
